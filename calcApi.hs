@@ -7,8 +7,13 @@
 {-# LANGUAGE ViewPatterns      #-}
 -- Importaciones Yesod
 import Data.Text.Read
-import Data.Text as T (Text, append, cons, head, isPrefixOf, null, dropWhile, drop)
+import Data.Text as T                (Text, append, cons, head, isPrefixOf, null, dropWhile, drop)
 import Yesod
+-- Convertir a Yesod a Wai
+import Network.HTTP.Types            (status200)
+import Network.Wai                   (responseBuilder)
+import Network.Wai.Handler.Warp      (run)
+import Network.Wai.Middleware.Cors
 -- Importaciones Módulos Calculadora
 import FunBasicas
 import FunTrigonometricas
@@ -44,6 +49,10 @@ mkYesod "App" [parseRoutes|
 /ln/#Text LnR GET
 /logaritmo/#Text/#Text LogaritmoR GET
 /exponencial/#Text ExponencialR GET
+/suma/#Text/#Text SumaR GET
+/resta/#Text/#Text RestaR GET
+/multiplicacion/#Text/#Text MultiplicacionR GET
+/division/#Text/#Text DivisionR GET
 |]
 
 ------------------------Métodos controladores en la API Web-----------------------------
@@ -58,6 +67,22 @@ getPotenciaR base exponente = selectRep $ do provideJson res where
 getFactorialR :: Text -> Handler TypedContent
 getFactorialR number = selectRep $ do provideJson res where
     res@Resultado {..} = Resultado (factorial(text2double number))
+-- Suma
+getSumaR :: Text -> Text -> Handler TypedContent
+getSumaR number1 number2 = selectRep $ do provideJson res where
+    res@Resultado {..} = Resultado (suma (text2double number1) (text2double number2))
+-- Resta
+getRestaR :: Text -> Text -> Handler TypedContent
+getRestaR number1 number2 = selectRep $ do provideJson res where
+    res@Resultado {..} = Resultado (resta (text2double number1) (text2double number2))
+-- Multiplicacion
+getMultiplicacionR :: Text -> Text -> Handler TypedContent
+getMultiplicacionR number1 number2 = selectRep $ do provideJson res where
+    res@Resultado {..} = Resultado (multiplicacion (text2double number1) (text2double number2))
+-- Divicion
+getDivisionR :: Text -> Text -> Handler TypedContent
+getDivisionR number1 number2 = selectRep $ do provideJson res where
+    res@Resultado {..} = Resultado (division (text2double number1) (text2double number2))
 
 ---- TRIGONOMÉTRICAS:
 -- Seno
@@ -121,4 +146,6 @@ precederCero t0 =
 
 -- Método principal, manda al puerto 3000 de localhost el resultado de las peticiones
 main :: IO ()
-main = warp 3000 App
+main = do
+    waiApp <- toWaiApp App
+    run 3000 $ simpleCors waiApp

@@ -6,7 +6,7 @@ import FunBasicas
 -- Params: 
 --    x=numero a calcular coseno.
 coseno :: Double -> Double
-coseno x = cosenoTaylor x 0 20
+coseno x = cosenoTaylor x 0 50
 -- Serie de Taylor para coseno
 -- Params: 
 --    x=numero a calcular coseno, 
@@ -26,7 +26,7 @@ cosenoTaylor x y z =
 -- Params: 
 --    x=numero a calcular seno.
 seno :: Double -> Double
-seno x = senoTaylor x 0 20
+seno x = senoTaylor x 0 50
 -- Serie de Taylor para seno
 -- Params: 
 --    x=numero a calcular seno, 
@@ -34,7 +34,7 @@ seno x = senoTaylor x 0 20
 --    z=fin de serie (aproximación).
 senoTaylor :: Double -> Double -> Double -> Double
 senoTaylor x y z = 
-  if y < 100
+  if y < z
   then 
       (potencia (-1.0)  y ) 
       * (( potencia x (2*y + 1) ) / (factorial (2*y + 1) ))
