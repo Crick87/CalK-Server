@@ -46,6 +46,8 @@ mkYesod "App" [parseRoutes|
 /cotangente/#Text CotangenteR GET
 /secante/#Text SecanteR GET
 /cosecante/#Text CosecanteR GET
+/grad2rad/#Text Grad2RadR GET
+/rad2grad/#Text Rad2GradR GET
 /ln/#Text LnR GET
 /logaritmo/#Text/#Text LogaritmoR GET
 /exponencial/#Text ExponencialR GET
@@ -109,6 +111,14 @@ getSecanteR number = selectRep $ do provideJson res where
 getCosecanteR :: Text -> Handler TypedContent
 getCosecanteR number = selectRep $ do provideJson res where
     res@Resultado {..} = Resultado (cosecante (text2double number))
+-- Convertir grados a radianes
+getGrad2RadR :: Text -> Handler TypedContent
+getGrad2RadR number = selectRep $ do provideJson res where
+    res@Resultado {..} = Resultado (grad2rad (text2double number))
+-- Convertir radianes a grados
+getRad2GradR :: Text -> Handler TypedContent
+getRad2GradR number = selectRep $ do provideJson res where
+    res@Resultado {..} = Resultado (rad2grad (text2double number))
 
 ---- LOGARÍTMICAS:
 -- Logaritmo natural
